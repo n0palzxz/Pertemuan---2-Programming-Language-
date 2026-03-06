@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Kalkulator Diskon</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet">
+
+</head>
+
+<body class="min-h-screen flex items-center justify-center bg-base-200">
+
+<div class="card w-96 bg-base-100 shadow-2xl">
+<div class="card-body">
+
+<h2 class="text-2xl font-bold text-center">
+🛍️ Kalkulator Diskon
+</h2>
+
+<p class="text-center text-sm opacity-70">
+Belanja <b>≥ Rp100.000</b> dapat diskon <b>10%</b>
+</p>
+
+<!-- INPUT -->
+<input
+type="text"
+id="harga"
+placeholder="Masukkan total belanja"
+class="input input-bordered w-full mt-3"
+/>
+
+<!-- PROGRESS MENUJU DISKON -->
+<div class="mt-2">
+<progress id="progressDiskon"
+class="progress progress-primary w-full"
+value="0"
+max="100000"></progress>
+
+<p id="infoProgress" class="text-xs mt-1 text-center"></p>
+</div>
+
+<!-- BUTTON -->
+<div class="flex gap-2 mt-3">
+<button class="btn btn-primary flex-1" onclick="hitungDiskon()">
+Hitung
+</button>
+
+<button class="btn btn-outline flex-1" onclick="resetDiskon()">
+Reset
+</button>
+</div>
+
+<!-- OUTPUT -->
+<div id="hasilDiskon" class="mt-4"></div>
+
+</div>
+</div>
+
+<script>
+
+let inputHarga = document.getElementById("harga");
+let progress = document.getElementById("progressDiskon");
+let info = document.getElementById("infoProgress");
+
+
+// FORMAT RUPIAH SAAT MENGETIK
+inputHarga.addEventListener("input", function(){
+
+let angka = this.value.replace(/[^0-9]/g,"");
+
+if(angka === ""){
+this.value = "";
+progress.value = 0;
+info.innerHTML = "";
+return;
+}
+
+let angkaNumber = parseInt(angka);
+
+this.value = "Rp " + angkaNumber.toLocaleString("id-ID");
+
+progress.value = angkaNumber;
+
+if(angkaNumber < 100000){
+
+let sisa = 100000 - angkaNumber;
+
+info.innerHTML =
+`Tambah Rp ${sisa.toLocaleString("id-ID")} lagi untuk mendapatkan diskon`;
+
+}else{
+
+info.innerHTML =
+`🎉 Kamu sudah memenuhi syarat diskon!`;
+
+}
+
+});
+
+
+// HITUNG DISKON
+function hitungDiskon(){
+
+let angka = inputHarga.value.replace(/[^0-9]/g,"");
+let harga = parseInt(angka);
+let output = document.getElementById("hasilDiskon");
+
+if(!harga){
+
+output.innerHTML = `
+<div class="alert alert-error">
+Masukkan jumlah belanja terlebih dahulu!
+</div>
+`;
+
+return;
+}
+
+if(harga >= 100000){
+
+let diskon = harga * 0.10;
+let total = harga - diskon;
+
+output.innerHTML = `
+<div class="card bg-success text-success-content p-4">
+<h3 class="font-bold text-center mb-2">🎉 Diskon Berhasil!</h3>
+
+<p>Total Belanja : Rp ${harga.toLocaleString("id-ID")}</p>
+<p>Diskon 10% : Rp ${diskon.toLocaleString("id-ID")}</p>
+
+<p class="font-bold text-lg mt-1">
+Total Bayar : Rp ${total.toLocaleString("id-ID")}
+</p>
+</div>
+`;
+
+}else{
+
+output.innerHTML = `
+<div class="card bg-warning text-warning-content p-4">
+<h3 class="font-bold text-center mb-2">Belum Mendapat Diskon</h3>
+
+<p>Total Belanja : Rp ${harga.toLocaleString("id-ID")}</p>
+<p>Diskon : Tidak ada</p>
+
+<p class="font-bold text-lg mt-1">
+Total Bayar : Rp ${harga.toLocaleString("id-ID")}
+</p>
+</div>
+`;
+
+}
+
+}
+
+
+// RESET
+function resetDiskon(){
+
+inputHarga.value = "";
+progress.value = 0;
+info.innerHTML = "";
+document.getElementById("hasilDiskon").innerHTML = "";
+
+}
+
+</script>
+
+</body>
+</html>
